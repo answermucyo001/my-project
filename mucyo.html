@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Claude Imanzi | Racing Scholar • Car Game + Portfolio</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Animated gradient background */
+    .animated-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: linear-gradient(125deg, #0a0a0a 0%, #0f172a 40%, #1e1b4b 80%, #0a0a0a 100%);
+      background-size: 400% 400%;
+      animation: gradientFlow 15s ease infinite;
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Particle canvas */
+    #particleCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    /* Glass morphism nav */
+    .glass-nav {
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(16px);
+      background: rgba(10, 10, 10, 0.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 100;
+      padding: 1rem 2rem;
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #a855f7, #06b6d4, #3b82f6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #f1f5f9;
+      font-weight: 500;
+      transition: 0.3s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #a855f7, #06b6d4);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #a855f7, #3b82f6);
+      padding: 0.7rem 1.8rem;
+      border-radius: 40px;
+      color: white;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.4);
+    }
+
+    /* Hero section */
+    .hero {
+      max-width: 1400px;
+      margin: 4rem auto;
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 3rem;
+    }
+
+    .hero-content {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .badge {
+      background: rgba(168, 85, 247, 0.2);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      padding: 0.4rem 1rem;
+      border-radius: 60px;
+      font-size: 0.8rem;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      letter-spacing: 1px;
+    }
+
+    .glow-text {
+      font-size: 4rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #ffffff, #a855f7, #06b6d4);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: textGlow 3s ease infinite;
+    }
+
+    @keyframes textGlow {
+      0% { filter: brightness(1); }
+      50% { filter: brightness(1.2); text-shadow: 0 0 20px rgba(168,85,247,0.5); }
+      100% { filter: brightness(1); }
+    }
+
+    .typed-container {
+      font-size: 1.5rem;
+      color: #cbd5e1;
+      margin-bottom: 1.5rem;
+    }
+
+    #typed-text {
+      color: #a855f7;
+      font-weight: 600;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 0.8rem 1.5rem;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #a855f7;
+    }
+
+    /* Projects section */
+    .projects-section {
+      max-width: 1400px;
+      margin: 6rem auto;
+      padding: 0 2rem;
+    }
+
+    .section-title {
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      font-weight: 700;
+    }
+
+    .section-title span {
+      background: linear-gradient(135deg, #a855f7, #06b6d4);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 2rem;
+    }
+
+    .project-3d {
+      background: rgba(20, 20, 40, 0.5);
+      backdrop-filter: blur(12px);
+      border-radius: 28px;
+      padding: 2rem;
+      border: 1px solid rgba(255,255,255,0.15);
+      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      cursor: pointer;
+    }
+
+    .project-3d:hover {
+      transform: translateY(-15px) rotateX(5deg);
+      border-color: rgba(168, 85, 247, 0.6);
+      box-shadow: 0 30px 40px -20px rgba(168,85,247,0.3);
+      background: rgba(30, 30, 60, 0.7);
+    }
+
+    .project-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .project-title {
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+    }
+
+    .tech-badge {
+      display: inline-block;
+      background: rgba(168,85,247,0.3);
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      margin: 0.2rem;
+    }
+
+    /* CAR GAME SECTION */
+    .game-section {
+      max-width: 900px;
+      margin: 4rem auto;
+      padding: 0 2rem;
+    }
+
+    .game-container {
+      background: linear-gradient(135deg, rgba(168,85,247,0.15), rgba(6,182,212,0.15));
+      backdrop-filter: blur(16px);
+      border-radius: 48px;
+      padding: 2rem;
+      border: 1px solid rgba(255,255,255,0.2);
+      text-align: center;
+    }
+
+    .game-container h3 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .game-sub {
+      color: #94a3b8;
+      margin-bottom: 1rem;
+    }
+
+    /* Canvas game styling */
+    .game-canvas-wrapper {
+      display: flex;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+
+    #carGameCanvas {
+      background: #0a2a1a;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(168,85,247,0.3);
+      border: 2px solid rgba(168,85,247,0.5);
+      cursor: pointer;
+    }
+
+    .game-controls {
+      margin: 1rem 0;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .game-btn {
+      background: rgba(168,85,247,0.3);
+      border: 1px solid #a855f7;
+      padding: 0.5rem 1.2rem;
+      border-radius: 30px;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+      font-weight: 600;
+    }
+
+    .game-btn:hover {
+      background: #a855f7;
+      transform: scale(1.05);
+    }
+
+    .score-board {
+      font-size: 1.2rem;
+      margin: 0.5rem 0;
+      font-weight: bold;
+    }
+
+    .controls-info {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-top: 0.5rem;
+    }
+
+    /* Scholarship spotlight */
+    .scholarship-spotlight {
+      background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(6,182,212,0.2));
+      backdrop-filter: blur(16px);
+      border-radius: 48px;
+      padding: 3rem;
+      margin: 4rem auto;
+      max-width: 1200px;
+      border: 1px solid rgba(255,255,255,0.2);
+      text-align: center;
+    }
+
+    .prize-pulse {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(168,85,247,0.4); }
+      70% { box-shadow: 0 0 0 20px rgba(168,85,247,0); }
+      100% { box-shadow: 0 0 0 0 rgba(168,85,247,0); }
+    }
+
+    /* Contact form */
+    .contact-modern {
+      max-width: 1000px;
+      margin: 4rem auto;
+      padding: 2rem;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(12px);
+      border-radius: 48px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 1rem;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 24px;
+      color: white;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+      margin-bottom: 1.2rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 3rem;
+    }
+
+    @media (max-width: 768px) {
+      .glow-text { font-size: 2.5rem; }
+      .nav-links { gap: 1rem; }
+      #carGameCanvas { width: 100%; height: auto; }
+    }
+  </style>
+</head>
+<body>
+<div class="animated-bg"></div>
+<canvas id="particleCanvas"></canvas>
+
+<nav class="glass-nav">
+  <div class="nav-container">
+    <div class="logo">✦ CLAUDE.DEV</div>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#game">Car Game</a></li>
+      <li><a href="#scholarship">Scholarship</a></li>
+      <li><a href="#contact">Connect</a></li>
+    </ul>
+    <a href="#contact" class="btn-primary">🚀 Sponsor Me</a>
+  </div>
+</nav>
+
+<section id="home">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="badge">🌟 SEEKING FULL SCHOLARSHIP • BSc COMPUTER SCIENCE</div>
+      <div class="glow-text">Building World-Class<br>Tech from Rwanda</div>
+      <div class="typed-container">
+        <span>🏎️ </span><span id="typed-text"></span>
+      </div>
+      <p style="font-size: 1.1rem; color: #94a3b8; max-width: 500px;">I turn complex problems into elegant software. 14+ production apps, open-source contributor, and future CS leader ready for university.</p>
+      <div class="hero-stats">
+        <div class="stat-card"><div class="stat-number">14+</div><div>Projects</div></div>
+        <div class="stat-card"><div class="stat-number">6</div><div>Hackathons</div></div>
+        <div class="stat-card"><div class="stat-number">5K+</div><div>Global Users</div></div>
+      </div>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="#projects" class="btn-primary">✨ Explore Work</a>
+        <button id="scholarshipBtn" class="btn-primary" style="background: transparent; border: 1px solid #a855f7;">🎓 Scholarship CV</button>
+      </div>
+    </div>
+    <div style="flex: 0.8; text-align: center;">
+      <div style="font-size: 10rem; filter: drop-shadow(0 0 30px rgba(168,85,247,0.5));">🏎️</div>
+      <p style="margin-top: 1rem;">#AfricaRising #CodeAndDrive</p>
+    </div>
+  </div>
+</section>
+
+<!-- CAR GAME SECTION -->
+<section id="game" class="game-section">
+  <div class="game-container">
+    <h3>🏁 HIGHWAY RACER 🏁</h3>
+    <div class="game-sub">Dodge incoming cars! How far can you drive?</div>
+    <div class="game-canvas-wrapper">
+      <canvas id="carGameCanvas" width="500" height="600"></canvas>
+    </div>
+    <div class="score-board">
+      Score: <span id="gameScore">0</span> &nbsp;|&nbsp; 
+      High Score: <span id="highScore">0</span>
+    </div>
+    <div class="game-controls">
+      <button id="startGameBtn" class="game-btn">🚦 START RACE</button>
+      <button id="resetGameBtn" class="game-btn">🔄 RESTART</button>
+    </div>
+    <div class="controls-info">
+      🎮 Use <strong>← LEFT ARROW</strong> and <strong>RIGHT ARROW →</strong> to move your car
+    </div>
+  </div>
+</section>
+
+<section id="projects" class="projects-section">
+  <div class="section-title"><span>✦ Revolutionary Projects ✦</span></div>
+  <div class="projects-grid" id="projectsGrid"></div>
+</section>
+
+<section id="scholarship">
+  <div class="scholarship-spotlight prize-pulse">
+    <h2 style="font-size: 2.8rem; margin-bottom: 1rem;">🎓 University Scholarship Goal</h2>
+    <p style="font-size: 1.2rem; max-width: 700px; margin: 0 auto;">I'm seeking a <strong style="color:#a855f7;">fully-funded scholarship</strong> to study Computer Science at <strong>CMU Africa, ALU, University of Rwanda, or any global university</strong>. In return, I'll build tech ecosystems and represent your program as a future tech leader.</p>
+    <div style="margin: 2rem 0; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+      <span style="background: rgba(168,85,247,0.3); padding: 0.5rem 1rem; border-radius: 30px;">🏅 98th percentile coding skills</span>
+      <span style="background: rgba(6,182,212,0.3); padding: 0.5rem 1rem; border-radius: 30px;">📱 5 production apps</span>
+      <span style="background: rgba(168,85,247,0.3); padding: 0.5rem 1rem; border-radius: 30px;">🌍 3 open-source contributions</span>
+    </div>
+    <a href="#contact" class="btn-primary" style="font-size: 1.2rem;">🎯 Nominate me for scholarship →</a>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-modern">
+    <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 2rem;">📡 Contact Scholarship Partners</h2>
+    <form id="scholarshipForm">
+      <div class="form-group"><input type="text" id="fullName" placeholder="Full name / Organization" required></div>
+      <div class="form-group"><input type="email" id="emailAddr" placeholder="Email address" required></div>
+      <div class="form-group"><textarea rows="4" placeholder="Scholarship offer / message / partnership" id="msg"></textarea></div>
+      <button type="submit" class="btn-primary" style="width: 100%;">✉️ Send Portfolio & Request</button>
+      <p id="formMessage" style="margin-top: 1rem; text-align: center;"></p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <p>✨ Claude Imanzi • Kigali, Rwanda • Open for global scholarship opportunities 2026 ✨</p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem;">Play the racing game → Prove your reflexes like I prove my code</p>
+</footer>
+
+<script>
+  // ====================  PROJECTS DATA  ====================
+  const projectsData = [
+    { icon: "🌾", title: "AgriAI Rwanda", desc: "AI-powered crop disease detection + marketplace for 2000+ farmers. Reduced losses by 42%.", tech: ["TensorFlow.js", "React", "Flask", "MongoDB"] },
+    { icon: "💊", title: "MedBlock", desc: "Decentralized health records using blockchain. Used by 3 district hospitals.", tech: ["Solidity", "Web3.js", "Node.js", "IPFS"] },
+    { icon: "🎓", title: "Elimu Scholarship Hub", desc: "Matched 500+ students with $2M+ in scholarships using smart matching algorithm.", tech: ["Python", "FastAPI", "Vue.js", "PostgreSQL"] },
+    { icon: "🚀", title: "Smart Irrigation IoT", desc: "Real-time soil moisture + automated water pump control (Raspberry Pi + AWS).", tech: ["C++", "MQTT", "AWS IoT", "React Native"] },
+    { icon: "💸", title: "FinLit Rwanda", desc: "Financial literacy app with gamification — 10k+ downloads.", tech: ["Flutter", "Firebase", "Google Pay API"] },
+    { icon: "🌍", title: "CarbonTrack", desc: "Carbon footprint tracker for African SMEs — pilot with 50 businesses.", tech: ["Next.js", "Prisma", "Chart.js", "Tailwind"] }
+  ];
+
+  const gridContainer = document.getElementById('projectsGrid');
+  if(gridContainer) {
+    projectsData.forEach(proj => {
+      const card = document.createElement('div');
+      card.className = 'project-3d';
+      card.innerHTML = `
+        <div class="project-icon">${proj.icon}</div>
+        <div class="project-title">${proj.title}</div>
+        <p style="color: #cbd5e1; margin-bottom: 1rem;">${proj.desc}</p>
+        <div>${proj.tech.map(t => `<span class="tech-badge">${t}</span>`).join('')}</div>
+        <div style="margin-top: 1.5rem;"><span style="color:#a855f7;">🔗 Live demo →</span></div>
+      `;
+      card.addEventListener('click', () => alert(`✨ ${proj.title}: Full source code & case study available for scholarship review. Contact me!`));
+      gridContainer.appendChild(card);
+    });
+  }
+
+  // ====================  TYPING ANIMATION  ====================
+  const phrases = ["Fullstack Architect", "Racing Coder", "AI Enthusiast", "Scholarship Seeker", "Game Developer"];
+  let i = 0, j = 0;
+  const typedEl = document.getElementById("typed-text");
+  function typeEffect() {
+    if(i < phrases.length) {
+      if(j < phrases[i].length) {
+        typedEl.textContent += phrases[i].charAt(j);
+        j++;
+        setTimeout(typeEffect, 100);
+      } else {
+        setTimeout(() => deleteEffect(), 2000);
+      }
+    } else { i = 0; typeEffect(); }
+  }
+  function deleteEffect() {
+    if(j > 0) {
+      typedEl.textContent = phrases[i].substring(0, j-1);
+      j--;
+      setTimeout(deleteEffect, 50);
+    } else {
+      i++;
+      j = 0;
+      if(i >= phrases.length) i = 0;
+      setTimeout(typeEffect, 200);
+    }
+  }
+  typeEffect();
+
+  // ====================  PARTICLE BACKGROUND  ====================
+  const canvas = document.getElementById('particleCanvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2 + 1;
+      this.speedX = Math.random() * 0.5 - 0.25;
+      this.speedY = Math.random() * 0.5 - 0.25;
+      this.color = `rgba(168, 85, 247, ${Math.random() * 0.3 + 0.1})`;
+    }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      if(this.x < 0) this.x = canvas.width;
+      if(this.x > canvas.width) this.x = 0;
+      if(this.y < 0) this.y = canvas.height;
+      if(this.y > canvas.height) this.y = 0;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.fill();
+    }
+  }
+  for(let p = 0; p < 100; p++) particles.push(new Particle());
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(part => { part.update(); part.draw(); });
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
+
+  // ====================  CAR GAME (Highway Racer) ====================
+  const gameCanvas = document.getElementById('carGameCanvas');
+  const gCtx = gameCanvas.getContext('2d');
+  
+  // Game variables
+  let gameRunning = false;
+  let animationId = null;
+  let score = 0;
+  let highScore = localStorage.getItem('carHighScore') || 0;
+  document.getElementById('highScore').innerText = highScore;
+  
+  // Player car
+  const player = {
+    width: 40,
+    height: 60,
+    x: gameCanvas.width/2 - 20,
+    y: gameCanvas.height - 80,
+    speed: 8
+  };
+  
+  // Obstacles (enemy cars)
+  let obstacles = [];
+  
+  // Road lines for scrolling effect
+  let roadLines = [];
+  for(let i = 0; i < 10; i++) {
+    roadLines.push({ y: i * 60 });
+  }
+  
+  // Controls
+  let leftPressed = false;
+  let rightPressed = false;
+  
+  function initGame() {
+    player.x = gameCanvas.width/2 - 20;
+    obstacles = [];
+    score = 0;
+    document.getElementById('gameScore').innerText = score;
+    roadLines = [];
+    for(let i = 0; i < 10; i++) {
+      roadLines.push({ y: i * 60 });
+    }
+  }
+  
+  function spawnObstacle() {
+    const obstacleWidth = 35 + Math.random() * 15;
+    const obstacleX = Math.random() * (gameCanvas.width - obstacleWidth);
+    obstacles.push({
+      x: obstacleX,
+      y: -60,
+      width: obstacleWidth,
+      height: 60,
+      speed: 3 + Math.floor(score / 300)
+    });
+  }
+  
+  function updateGame() {
+    if(!gameRunning) return;
+    
+    // Move player
+    if(leftPressed && player.x > 10) player.x -= player.speed;
+    if(rightPressed && player.x < gameCanvas.width - player.width - 10) player.x += player.speed;
+    
+    // Move obstacles and road lines
+    for(let i = 0; i < roadLines.length; i++) {
+      roadLines[i].y += 5;
+      if(roadLines[i].y > gameCanvas.height) {
+        roadLines[i].y = -60;
+      }
+    }
+    
+    for(let i = 0; i < obstacles.length; i++) {
+      obstacles[i].y += obstacles[i].speed;
+    }
+    
+    // Spawn obstacles
+    if(Math.random() < 0.02 + (score / 5000)) {
+      spawnObstacle();
+    }
+    
+    // Remove off-screen obstacles and increase score
+    obstacles = obstacles.filter(obs => {
+      if(obs.y > gameCanvas.height) {
+        score += 10;
+        document.getElementById('gameScore').innerText = score;
+        if(score > highScore) {
+          highScore = score;
+          localStorage.setItem('carHighScore', highScore);
+          document.getElementById('highScore').innerText = highScore;
+        }
+        return false;
+      }
+      return true;
+    });
+    
+    // Collision detection
+    for(let obs of obstacles) {
+      if(player.x < obs.x + obs.width &&
+         player.x + player.width > obs.x &&
+         player.y < obs.y + obs.height &&
+         player.y + player.height > obs.y) {
+        gameOver();
+        return;
+      }
+    }
+    
+    drawGame();
+    animationId = requestAnimationFrame(updateGame);
+  }
+  
+  function drawGame() {
+    gCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+    
+    // Draw road (asphalt)
+    gCtx.fillStyle = "#1a2a1a";
+    gCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+    
+    // Draw road lines
+    gCtx.strokeStyle = "#ffff00";
+    gCtx.lineWidth = 5;
+    for(let line of roadLines) {
+      gCtx.beginPath();
+      gCtx.moveTo(gameCanvas.width/2, line.y);
+      gCtx.lineTo(gameCanvas.width/2, line.y + 40);
+      gCtx.stroke();
+    }
+    
+    // Draw side lines
+    gCtx.strokeStyle = "#ffffff";
+    gCtx.lineWidth = 3;
+    gCtx.beginPath();
+    gCtx.moveTo(30, 0);
+    gCtx.lineTo(30, gameCanvas.height);
+    gCtx.stroke();
+    gCtx.beginPath();
+    gCtx.moveTo(gameCanvas.width - 30, 0);
+    gCtx.lineTo(gameCanvas.width - 30, gameCanvas.height);
+    gCtx.stroke();
+    
+    // Draw enemy cars (obstacles)
+    for(let obs of obstacles) {
+      // Red enemy car
+      gCtx.fillStyle = "#dc2626";
+      gCtx.fillRect(obs.x, obs.y, obs.width, obs.height);
+      gCtx.fillStyle = "#991b1b";
+      gCtx.fillRect(obs.x + 5, obs.y + 5, obs.width - 10, 10);
+      gCtx.fillStyle = "#facc15";
+      gCtx.fillRect(obs.x + obs.width/2 - 5, obs.y + obs.height - 15, 10, 10);
+    }
+    
+    // Draw player car (purple race car)
+    gCtx.fillStyle = "#a855f7";
+    gCtx.fillRect(player.x, player.y, player.width, player.height);
+    gCtx.fillStyle = "#7e22ce";
+    gCtx.fillRect(player.x + 5, player.y + 5, player.width - 10, 15);
+    gCtx.fillStyle = "#facc15";
+    gCtx.fillRect(player.x + player.width/2 - 5, player.y + player.height - 15, 10, 10);
+    // Windows
+    gCtx.fillStyle = "#38bdf8";
+    gCtx.fillRect(player.x + 8, player.y + 8, 8, 12);
+    gCtx.fillRect(player.x + player.width - 16, player.y + 8, 8, 12);
+    
+    // Draw score on canvas
+    gCtx.fillStyle = "#ffffff";
+    gCtx.font = "bold 20px monospace";
+    gCtx.fillText("SCORE: " + score, 20, 40);
+  }
+  
+  function gameOver() {
+    gameRunning = false;
+    if(animationId) cancelAnimationFrame(animationId);
+    gCtx.fillStyle = "rgba(0,0,0,0.7)";
+    gCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+    gCtx.fillStyle = "#a855f7";
+    gCtx.font = "bold 30px Poppins";
+    gCtx.textAlign = "center";
+    gCtx.fillText("GAME OVER!", gameCanvas.width/2, gameCanvas.height/2 - 30);
+    gCtx.font = "20px Poppins";
+    gCtx.fillStyle = "#ffffff";
+    gCtx.fillText("Score: " + score, gameCanvas.width/2, gameCanvas.height/2 + 20);
+    gCtx.fillText("Click START to race again", gameCanvas.width/2, gameCanvas.height/2 + 70);
+    gCtx.textAlign = "left";
+    
+    // Scholarship message on game over
+    if(score > 100) {
+      setTimeout(() => {
+        alert("🏆 Amazing driving! You scored " + score + " points! Just like my coding skills, I push limits. Ready for scholarship interview!");
+      }, 100);
+    }
+  }
+  
+  function startRace() {
+    if(gameRunning) {
+      if(animationId) cancelAnimationFrame(animationId);
+    }
+    initGame();
+    gameRunning = true;
+    updateGame();
+  }
+  
+  function resetRace() {
+    if(gameRunning) {
+      if(animationId) cancelAnimationFrame(animationId);
+    }
+    initGame();
+    drawGame();
+    gameRunning = false;
+  }
+  
+  // Event listeners for car game
+  document.getElementById('startGameBtn').addEventListener('click', startRace);
+  document.getElementById('resetGameBtn').addEventListener('click', resetRace);
+  
+  window.addEventListener('keydown', (e) => {
+    if(e.key === 'ArrowLeft') {
+      leftPressed = true;
+      e.preventDefault();
+    } else if(e.key === 'ArrowRight') {
+      rightPressed = true;
+      e.preventDefault();
+    }
+  });
+  
+  window.addEventListener('keyup', (e) => {
+    if(e.key === 'ArrowLeft') leftPressed = false;
+    if(e.key === 'ArrowRight') rightPressed = false;
+  });
+  
+  // Initial draw
+  drawGame();
+  
+  // ====================  SCHOLARSHIP FORM HANDLER  ====================
+  const formScholarship = document.getElementById('scholarshipForm');
+  const feedbackMsg = document.getElementById('formMessage');
+  if(formScholarship) {
+    formScholarship.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('fullName').value;
+      const email = document.getElementById('emailAddr').value;
+      if(name && email) {
+        feedbackMsg.innerHTML = `✅ Thank you ${name}! Your request has been sent to the scholarship team. We'll reply with full portfolio & GitHub within 24h to ${email}.`;
+        feedbackMsg.style.color = "#a855f7";
+        formScholarship.reset();
+        setTimeout(() => feedbackMsg.innerHTML = "", 5000);
+      } else {
+        feedbackMsg.innerHTML = "❌ Please fill in name and email to proceed.";
+        feedbackMsg.style.color = "#f87171";
+      }
+    });
+  }
+  
+  document.getElementById('scholarshipBtn')?.addEventListener('click', () => {
+    alert("📄 SCHOLARSHIP CV: 4.0 GPA equivalent • 14 projects • 3 letters of recommendation • GitHub: 2000+ contributions. Ready for interview. Email claude@scholarship.rw");
+  });
+  
+  // smooth scroll
+  document.querySelectorAll('.nav-links a').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href').substring(1);
+      const target = document.getElementById(targetId);
+      if(target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
